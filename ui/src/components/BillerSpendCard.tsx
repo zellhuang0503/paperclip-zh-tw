@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import type { CostByBiller, CostByProviderModel } from "@paperclipai/shared";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { QuotaBar } from "./QuotaBar";
@@ -19,6 +20,8 @@ export function BillerSpendCard({
   totalCompanySpendCents,
   providerRows,
 }: BillerSpendCardProps) {
+  const { t } = useTranslation();
+
   const providerBreakdown = useMemo(() => {
     const map = new Map<string, { provider: string; costCents: number; inputTokens: number; outputTokens: number }>();
     for (const entry of providerRows) {
@@ -62,13 +65,13 @@ export function BillerSpendCard({
               {providerDisplayName(row.biller)}
             </CardTitle>
             <CardDescription className="text-xs mt-0.5">
-              <span className="font-mono">{formatTokens(row.inputTokens + row.cachedInputTokens)}</span> in
+              <span className="font-mono">{formatTokens(row.inputTokens + row.cachedInputTokens)}</span> {t("finance.in")}
               {" · "}
-              <span className="font-mono">{formatTokens(row.outputTokens)}</span> out
+              <span className="font-mono">{formatTokens(row.outputTokens)}</span> {t("finance.out")}
               {" · "}
-              {row.providerCount} provider{row.providerCount === 1 ? "" : "s"}
+              {row.providerCount} {row.providerCount === 1 ? t("finance.provider") : t("finance.providers")}
               {" · "}
-              {row.modelCount} model{row.modelCount === 1 ? "" : "s"}
+              {row.modelCount} {row.modelCount === 1 ? t("finance.model") : t("finance.models")}
             </CardDescription>
           </div>
           <span className="text-xl font-bold tabular-nums shrink-0">
@@ -80,21 +83,21 @@ export function BillerSpendCard({
       <CardContent className="px-4 pb-4 pt-3 space-y-4">
         {budgetMonthlyCents > 0 && (
           <QuotaBar
-            label="Period spend"
+            label={t("finance.periodSpend")}
             percentUsed={budgetPct}
             leftLabel={formatCents(row.costCents)}
-            rightLabel={`${Math.round(budgetPct)}% of allocation`}
+            rightLabel={`${Math.round(budgetPct)}% ${t("finance.ofAllocation")}`}
           />
         )}
 
         <div className="text-xs text-muted-foreground">
-          {row.apiRunCount > 0 ? `${row.apiRunCount} metered run${row.apiRunCount === 1 ? "" : "s"}` : "0 metered runs"}
+          {row.apiRunCount > 0 ? `${row.apiRunCount} ${row.apiRunCount === 1 ? t("finance.meteredRun") : t("finance.meteredRuns")}` : `0 ${t("finance.meteredRuns")}`}
           {" · "}
           {row.subscriptionRunCount > 0
-            ? `${row.subscriptionRunCount} subscription run${row.subscriptionRunCount === 1 ? "" : "s"}`
-            : "0 subscription runs"}
+            ? `${row.subscriptionRunCount} ${row.subscriptionRunCount === 1 ? t("finance.subscriptionRun") : t("finance.subscriptionRuns")}`
+            : `0 ${t("finance.subscriptionRuns")}`}
           {" · "}
-          {formatCents(weekSpendCents)} this week
+          {formatCents(weekSpendCents)} {t("finance.thisWeek")}
         </div>
 
         {billingTypeBreakdown.length > 0 && (
@@ -102,7 +105,7 @@ export function BillerSpendCard({
             <div className="border-t border-border" />
             <div className="space-y-2">
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                Billing types
+                {t("finance.billingTypes")}
               </p>
               <div className="space-y-1.5">
                 {billingTypeBreakdown.map(([billingType, costCents]) => (
@@ -121,7 +124,7 @@ export function BillerSpendCard({
             <div className="border-t border-border" />
             <div className="space-y-2">
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                Upstream providers
+                {t("finance.upstreamProviders")}
               </p>
               <div className="space-y-1.5">
                 {providerBreakdown.map((entry) => (

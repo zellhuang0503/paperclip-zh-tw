@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { CheckCircle2, XCircle, Clock } from "lucide-react";
 import { Link } from "@/lib/router";
 import { Button } from "@/components/ui/button";
@@ -31,6 +32,7 @@ export function ApprovalCard({
   detailLink?: string;
   isPending: boolean;
 }) {
+  const { t } = useTranslation();
   const Icon = typeIcon[approval.type] ?? defaultTypeIcon;
   const label = approvalLabel(approval.type, approval.payload as Record<string, unknown> | null);
   const showResolutionButtons =
@@ -47,14 +49,14 @@ export function ApprovalCard({
             <span className="font-medium text-sm">{label}</span>
             {requesterAgent && (
               <span className="text-xs text-muted-foreground">
-                requested by <Identity name={requesterAgent.name} size="sm" className="inline-flex" />
+                {t("approvals.requestedBy")} <Identity name={requesterAgent.name} size="sm" className="inline-flex" />
               </span>
             )}
           </div>
         </div>
         <div className="flex items-center gap-1.5 shrink-0">
           {statusIcon(approval.status)}
-          <span className="text-xs text-muted-foreground capitalize">{approval.status}</span>
+          <span className="text-xs text-muted-foreground capitalize">{t(`approvals.status.${approval.status}`)}</span>
           <span className="text-xs text-muted-foreground">· {timeAgo(approval.createdAt)}</span>
         </div>
       </div>
@@ -65,7 +67,7 @@ export function ApprovalCard({
       {/* Decision note */}
       {approval.decisionNote && (
         <div className="mt-3 text-xs text-muted-foreground italic border-t border-border pt-2">
-          Note: {approval.decisionNote}
+          {t("approvals.note")}: {approval.decisionNote}
         </div>
       )}
 
@@ -78,7 +80,7 @@ export function ApprovalCard({
             onClick={onApprove}
             disabled={isPending}
           >
-            Approve
+            {t("approvals.approve")}
           </Button>
           <Button
             variant="destructive"
@@ -86,18 +88,18 @@ export function ApprovalCard({
             onClick={onReject}
             disabled={isPending}
           >
-            Reject
+            {t("approvals.reject")}
           </Button>
         </div>
       )}
       <div className="mt-3">
         {detailLink ? (
           <Button variant="ghost" size="sm" className="text-xs px-0" asChild>
-            <Link to={detailLink}>View details</Link>
+            <Link to={detailLink}>{t("approvals.viewDetails")}</Link>
           </Button>
         ) : (
           <Button variant="ghost" size="sm" className="text-xs px-0" onClick={onOpen}>
-            View details
+            {t("approvals.viewDetails")}
           </Button>
         )}
       </div>

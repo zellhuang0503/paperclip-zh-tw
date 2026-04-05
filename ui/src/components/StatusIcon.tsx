@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { cn } from "../lib/utils";
 import { issueStatusIcon, issueStatusIconDefault } from "../lib/status-colors";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -6,9 +7,15 @@ import { Button } from "@/components/ui/button";
 
 const allStatuses = ["backlog", "todo", "in_progress", "in_review", "done", "cancelled", "blocked"];
 
-function statusLabel(status: string): string {
-  return status.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
-}
+const STATUS_I18N_MAP: Record<string, string> = {
+  backlog: "status.backlog",
+  todo: "status.todo",
+  in_progress: "status.inProgress",
+  in_review: "status.inReview",
+  done: "status.done",
+  cancelled: "status.cancelled",
+  blocked: "status.blocked",
+};
 
 interface StatusIconProps {
   status: string;
@@ -18,6 +25,8 @@ interface StatusIconProps {
 }
 
 export function StatusIcon({ status, onChange, className, showLabel }: StatusIconProps) {
+  const { t } = useTranslation();
+  const statusLabel = (s: string) => STATUS_I18N_MAP[s] ? t(STATUS_I18N_MAP[s]) : s.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
   const [open, setOpen] = useState(false);
   const colorClass = issueStatusIcon[status] ?? issueStatusIconDefault;
   const isDone = status === "done";
