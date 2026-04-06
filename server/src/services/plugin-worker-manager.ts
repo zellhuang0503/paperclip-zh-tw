@@ -616,7 +616,12 @@ export function createPluginWorkerHandle(
       TZ: process.env.TZ ?? "UTC",
     };
 
-    const child = fork(options.entrypointPath, [], {
+    // On Windows, Node's ESM loader rejects backslash paths (interprets the
+    // drive letter as a URL scheme).  Convert to forward slashes so the loader
+    // recognises the path as a valid Windows absolute path.
+    const modulePath = options.entrypointPath.replaceAll("\\", "/");
+
+    const child = fork(modulePath, [], {
       stdio: ["pipe", "pipe", "pipe", "ipc"],
       execArgv: options.execArgv ?? [],
       env: workerEnv,
