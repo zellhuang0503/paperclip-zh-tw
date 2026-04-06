@@ -440,16 +440,29 @@ async function routeToAgent(
       agent.name,
     );
 
-    let fullResponse = "";
+    // sendMessage resolves immediately with { runId } — the actual agent
+    // output arrives asynchronously via onEvent notifications.  We must wait
+    // for the "done" (or "error") event before reading fullResponse.
+    const fullResponse = await new Promise<string>((resolve, reject) => {
+      let collected = "";
 
-    await ctx.agents.sessions.sendMessage(sessionId, config.companyId, {
-      prompt: `[Telegram 訊息來自 ${senderName}]\n\n${prompt}`,
-      reason: "Telegram bridge message",
-      onEvent: (event) => {
-        if (event.stream === "stdout" && event.message) {
-          fullResponse += event.message;
-        }
-      },
+      ctx.agents.sessions
+        .sendMessage(sessionId, config.companyId, {
+          prompt: `[Telegram 訊息來自 ${senderName}]\n\n${prompt}`,
+          reason: "Telegram bridge message",
+          onEvent: (event) => {
+            if (event.stream === "stdout" && event.message) {
+              collected += event.message;
+            }
+            if (event.eventType === "done") {
+              resolve(collected);
+            }
+            if (event.eventType === "error") {
+              reject(new Error(event.message || "Agent session error"));
+            }
+          },
+        })
+        .catch(reject);
     });
 
     if (fullResponse.trim()) {
