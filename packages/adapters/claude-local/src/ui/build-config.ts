@@ -95,6 +95,8 @@ export function buildClaudeLocalConfig(v: CreateConfigValues): Record<string, un
   if (runtimeServices && Array.isArray(runtimeServices.services)) {
     ac.workspaceRuntime = runtimeServices;
   }
+  const mcpServers = parseJsonObject(v.mcpServersJson ?? "");
+  if (mcpServers && Object.keys(mcpServers).length > 0) ac.mcpServers = mcpServers;
   if (v.command) ac.command = v.command;
   if (v.extraArgs) ac.extraArgs = parseCommaArgs(v.extraArgs);
   return ac;

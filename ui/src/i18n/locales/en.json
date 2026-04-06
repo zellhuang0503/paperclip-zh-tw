@@ -1240,6 +1240,7 @@
       "cooldownSec": "Minimum seconds between consecutive heartbeat runs.",
       "maxConcurrentRuns": "Maximum number of heartbeat runs that can execute simultaneously for this agent.",
       "budgetMonthlyCents": "Monthly spending limit in cents. 0 means no limit."
+      ,"mcpServers": "MCP (Model Context Protocol) servers that provide additional tools to the agent. Define servers as JSON with command, args, and env fields."
     },
     "unsavedChanges": "Unsaved changes",
     "saving": "Saving...",

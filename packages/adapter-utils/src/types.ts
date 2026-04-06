@@ -386,6 +386,7 @@ export interface CreateConfigValues {
   workspaceBranchTemplate?: string;
   worktreeParentDir?: string;
   runtimeServicesJson?: string;
+  mcpServersJson?: string;
   maxTurnsPerRun: number;
   heartbeatEnabled: boolean;
   intervalSec: number;

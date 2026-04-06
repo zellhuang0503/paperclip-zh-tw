@@ -32,6 +32,7 @@ import {
   isClaudeUnknownSessionError,
 } from "./parse.js";
 import { resolveClaudeDesiredSkillNames } from "./skills.js";
+import { parseMcpServers, writeMcpConfigFile } from "./mcp-config.js";
 
 const __moduleDir = path.dirname(fileURLToPath(import.meta.url));
 
@@ -360,6 +361,13 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
   const billingType = resolveClaudeBillingType(effectiveEnv);
   const skillsDir = await buildSkillsDir(config);
 
+  // Build MCP server config file when mcpServers is configured.
+  const mcpServers = parseMcpServers(config);
+  let mcpConfigPath: string | null = null;
+  if (mcpServers) {
+    mcpConfigPath = await writeMcpConfigFile(skillsDir, mcpServers);
+  }
+
   // When instructionsFilePath is configured, create a combined temp file that
   // includes both the file content and the path directive, so we only need
   // --append-system-prompt-file (Claude CLI forbids using both flags together).
@@ -438,6 +446,7 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
       args.push("--append-system-prompt-file", effectiveInstructionsFilePath);
     }
     args.push("--add-dir", skillsDir);
+    if (mcpConfigPath) args.push("--mcp-config", mcpConfigPath);
     if (extraArgs.length > 0) args.push(...extraArgs);
     return args;
   };

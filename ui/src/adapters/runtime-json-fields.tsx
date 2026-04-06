@@ -21,7 +21,7 @@ function formatJsonObject(value: unknown): string {
 
 function updateJsonConfig(
   isCreate: boolean,
-  key: "runtimeServicesJson" | "payloadTemplateJson",
+  key: "runtimeServicesJson" | "payloadTemplateJson" | "mcpServersJson",
   next: string,
   set: AdapterConfigFieldsProps["set"],
   mark: AdapterConfigFieldsProps["mark"],
@@ -116,6 +116,48 @@ export function PayloadTemplateJsonField({
           updateJsonConfig(isCreate, "payloadTemplateJson", next, set, mark, "payloadTemplate");
         }}
         placeholder={`{\n  "agentId": "remote-agent-123",\n  "metadata": {\n    "team": "platform"\n  }\n}`}
+      />
+    </Field>
+  );
+}
+
+export function McpServersJsonField({
+  isCreate,
+  values,
+  set,
+  config,
+  mark,
+}: JsonFieldProps) {
+  const existing = formatJsonObject(config.mcpServers);
+  const [draft, setDraft] = useState(existing);
+
+  useEffect(() => {
+    if (!isCreate) setDraft(existing);
+  }, [existing, isCreate]);
+
+  const value = isCreate ? values?.mcpServersJson ?? "" : draft;
+
+  return (
+    <Field label="MCP Servers" hint="agentConfig.help.mcpServers">
+      <textarea
+        className={`${inputClass} min-h-[180px]`}
+        value={value}
+        onChange={(e) => {
+          const next = e.target.value;
+          if (!isCreate) setDraft(next);
+          updateJsonConfig(isCreate, "mcpServersJson", next, set, mark, "mcpServers");
+        }}
+        placeholder={`{
+  "tavily": {
+    "command": "npx",
+    "args": ["tavily-mcp-server"],
+    "env": { "TAVILY_API_KEY": "sk-..." }
+  },
+  "filesystem": {
+    "command": "npx",
+    "args": ["@anthropic-ai/mcp-filesystem", "/path"]
+  }
+}`}
       />
     </Field>
   );

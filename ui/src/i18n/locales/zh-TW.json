@@ -1236,6 +1236,7 @@
       "cooldownSec": "連續心跳執行之間的最少秒數。",
       "maxConcurrentRuns": "此代理可同時執行的最大心跳執行數。",
       "budgetMonthlyCents": "每月消費限額（以分為單位）。0 表示無限制。"
+      ,"mcpServers": "MCP（模型上下文協議）伺服器，為代理提供額外工具。以 JSON 格式定義伺服器，包含 command、args 和 env 欄位。"
     },
     "unsavedChanges": "未儲存的變更",
     "saving": "儲存中...",
