@@ -1,0 +1,30 @@
+{
+  "name": "@paperclipai/plugin-telegram-bridge",
+  "version": "0.2.0",
+  "description": "Bridges Telegram messages to Paperclip agents, enabling remote command & control via Telegram Bot",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "paperclipPlugin": {
+    "manifest": "./dist/manifest.js",
+    "worker": "./dist/worker.js"
+  },
+  "scripts": {
+    "prebuild": "node ../../../../scripts/ensure-plugin-build-deps.mjs",
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "typecheck": "pnpm --filter @paperclipai/plugin-sdk build && tsc --noEmit",
+    "setup:webhook": "bash scripts/setup-telegram-webhook.sh",
+    "check:webhook": "bash scripts/check-telegram-webhook.sh"
+  },
+  "dependencies": {
+    "@paperclipai/plugin-sdk": "workspace:*",
+    "@paperclipai/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^24.6.0",
+    "typescript": "^5.7.3"
+  }
+}
